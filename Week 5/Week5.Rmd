@@ -1,0 +1,75 @@
+---
+title: "Week 5"
+author: "Faizan Younus"
+date: "September 28, 2018"
+output: html_document
+---
+
+
+The chart above describes arrival delays for two airlines across five destinations. Your task is to:
+(1) Create a .CSV file (or optionally, a MySQL database!) that includes all of the information above.
+You're encouraged to use a "wide" structure similar to how the information appears above, so
+that you can practice tidying and transformations as described below.
+(2) Read the information from your .CSV file into R, and use tidyr and dplyr as needed to tidy
+and transform your data.
+(3) Perform analysis to compare the arrival delays for the two airlines.
+(4) Your code should be in an R Markdown file, posted to rpubs.com, and should include narrative
+descriptions of your data cleanup work, analysis, and conclusions. Please include in your
+homework submission:
+??? The URL to the .Rmd file in your GitHub repository. and
+??? The URL for your rpubs.com web page
+
+#Load Library
+```{r}
+library(tidyr)
+library(dplyr)
+```
+
+#1)Create CSV of Data
+```{r setup, include=FALSE}
+csv <- rbind(c("","", "Los Angeles", "Phoenix", "San Diego", "San Francisco", "Seattle"),
+  c("ALASKA", "On Time", 497, 221, 212, 503, 1841),
+  c("ALASKA", "Delayed", 62, 12, 20, 102, 305),
+  c("AM WEST", "On Time", 694, 4840, 383, 320, 201),
+  c("AM WEST", "Delayed", 117, 415, 65, 129, 61))
+```
+
+#2)Loading data into R
+```{r}
+write.table(csv, file = "Week5FY.csv", sep = ",", col.names=F, row.names=F)
+Rawwide_data <- read.csv(paste0("https://raw.githubusercontent.com/Fyoun123/Data607/master/Week%205/Week5FY.csv"),stringsAsFactors = F); Rawwide_data
+```
+
+Using Gather to create Key-Value Pairs:
+```{r}
+LongConversion <- gather(Rawwide_data,city,number,Los.Angeles:Seattle, factor_key = TRUE)
+LongConversion
+```
+
+Renaming the Columns to be more approriate:
+```{r}
+colnames(LongConversion)[2] <- "Ontime/Delay"
+colnames(LongConversion)[1] <- "Vendor"
+```
+
+Spread allows us to take two columns and create to columns, In this case breaking up out Ontime/Delay column in liue of the flight info. 
+```{r}
+LongConversion$Vendor <- factor(LongConversion$Vendor)
+LongConversion2 <- spread(LongConversion,"Ontime/Delay","number")
+LongConversion2
+```
+
+We use the Diplyr Fucniton Mutate to add new variables taht are functions of existing varaibles, in this case calcullating intitally the total number of flights. Group_by allows us to utilize our vendor as the driver when coupled with summarise. We can then simply divide the on time flights by the total flights. 
+
+```{r}
+Performace <- LongConversion2 %>% mutate(total = Delayed + `On Time`) %>% group_by(Vendor) %>% summarise(DT = sum(Delayed), OT = sum(`On Time`), Total = sum(total), OntimeP = round(OT/Total*100,digits = 2))
+Performace
+```
+
+Same synthax as above, this time utizlizing the city as our groupping rather than our airline:
+
+```{r}
+Performace2 <- LongConversion2 %>% mutate(total = Delayed + `On Time`) %>% group_by(city) %>% summarise(DT = sum(Delayed), OT = sum(`On Time`), Total = sum(total), OntimeP = round(OT/Total*100,digits = 2))
+Performace2
+```
+
