@@ -1,0 +1,83 @@
+---
+title: "Project 2 A"
+author: "Faizan Younus"
+date: "October 5, 2018"
+output: html_document
+---
+
+IS 607 - Project 2
+The goal of this assignment is to give you practice in preparing different datasets for downstream analysis work.
+Your task is to:
+
+(1) Choose any three of the "wide" datasets identified in the Week 6 Discussion items. (You may use your own dataset; please don't use my Sample Post dataset, since that was used in your Week 6 assignment!) For each of the three chosen datasets:
+
+Create a .CSV file (or optionally, a MySQL database!) that includes all of the information included in the dataset. You're encouraged to use a "wide" structure similar to how the information appears in the discussion item, so that you can practice tidying and transformations as described below.
+Read the information from your .CSV file into R, and use tidyr and dplyr as needed to tidy and transform your data. [Most of your grade will be based on this step!]
+Perform the analysis requested in the discussion item.
+Your code should be in an R Markdown file, posted to rpubs.com, and should include narrative descriptions of your data cleanup work, analysis, and conclusions.
+
+(2) Please include in your homework submission, for each of the three chosen datasets:
+The URL to the .Rmd file in your GitHub repository, and The URL for your rpubs.com web page.
+
+
+Data Acquired from Wikipedia:https://en.wikipedia.org/wiki/Aaron_Rodgers
+
+
+
+For part A I'm looking at the career numbers for Aaron Rodgers. I'd like to compare his 2015, and 2016 number in a tabular model to see how they trajected in some of his best years. 
+
+
+#Loading the packages
+
+```{r}
+library(tidyr)
+library(dplyr)
+```
+
+
+
+#Loading the data into R
+```{r}
+Rawwide_data <- read.csv(paste0("https://raw.githubusercontent.com/Fyoun123/Data607/master/Project%202/ARP2.csv"),stringsAsFactors = F); Rawwide_data
+```
+#Selecting portions I want
+```{r}
+DF2 <- Rawwide_data %>%
+    select(Year,Passing...Comp,Passing...Att,Passing...Pct,Passing...Avg,Passing...TD,Passing...Int,Passing...Rate)
+  DF2
+```
+
+
+#Using gather to make the data long. 
+```{r}
+DF3<- DF2 %>% gather(Type,Number,Passing...Comp:Passing...Rate)
+DF3
+```
+
+
+#Filtering the data to only show 2015 and 2016
+```{r}
+DF4 <- DF3 %>% filter(Year==2015|Year==2016)
+DF4
+```
+
+#Renaming the columns
+```{r}
+colnames(DF4)[1] <- "2015/2016"
+colnames(DF4)[2] <- "Type"
+```
+
+#Using spread to make the model tabular for comparison.
+```{r}
+DF4$Type <- factor(DF4$Type)
+DF5 <- spread(DF4,"2015/2016","Number")
+DF5
+```
+
+
+
+
+_____________________________________________________________________________________________________________________________________________________________________
+
+
+

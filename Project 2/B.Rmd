@@ -1,0 +1,72 @@
+---
+title: "Project 2 B"
+author: "Faizan Younus"
+date: "October 5, 2018"
+output: html_document
+---
+IS 607 - Project 2
+The goal of this assignment is to give you practice in preparing different datasets for downstream analysis work.
+Your task is to:
+
+(1) Choose any three of the "wide" datasets identified in the Week 6 Discussion items. (You may use your own dataset; please don't use my Sample Post dataset, since   that was used in your Week 6 assignment!) For each of the three chosen datasets:
+??? Create a .CSV file (or optionally, a MySQL database!) that includes all of the information included in the dataset. You're encouraged to use a "wide" structure      similar to how the information appears in the discussion item, so that you can practice tidying and transformations as described below.
+??? Read the information from your .CSV file into R, and use tidyr and dplyr as needed to tidy and transform your data. [Most of your grade will be based on this step!]
+??? Perform the analysis requested in the discussion item.
+??? Your code should be in an R Markdown file, posted to rpubs.com, and should include narrative descriptions of your data cleanup work, analysis, and conclusions.
+(2) Please include in your homework submission, for each of the three chosen datasets:
+??? The URL to the .Rmd file in your GitHub repository, and
+??? The URL for your rpubs.com web page.
+
+
+
+Data Acquired from :https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j/data
+Courtesy of Robert Lauto 
+
+I will take the Restaurant Inspection resutls and transpose and tidy them so that I may make a comparison between cuisine types and overall cleanliness of restaurants between Bronx and Brooklyn.  
+
+
+
+#Loading the packages
+```{r}
+library(tidyr)
+library(dplyr)
+```
+
+#Loading the data into R
+```{r}
+Rawwide_data <- read.csv(paste0("https://raw.githubusercontent.com/Fyoun123/Data607/master/Project%202/DOHMH_New_York_City_Restaurant_Inspection_Results%20(3).csv"),stringsAsFactors = F); head(Rawwide_data)
+```
+
+
+#Selecting portions I want
+```{r}
+DF2 <- Rawwide_data %>%
+  select(BORO,CUISINE.DESCRIPTION,SCORE);head(DF2)
+```
+
+#Renaming the Column
+```{r}
+colnames(DF2)[1] <- "BROOKLYN/BRONX"
+```
+
+
+#Filtering out undesired results
+```{r}
+DF3 <- DF2 %>% filter(SCORE>=0);head(DF3)
+```
+
+#Testing the Mean
+```{r}
+mean(DF3$SCORE)
+```
+
+#Getting an average score by Cusisine type. 
+```{r}
+Performance <- DF3 %>% group_by(`BROOKLYN/BRONX`,CUISINE.DESCRIPTION) %>% summarise(Average = mean(SCORE));Performance
+```
+
+#Benchmarking a comparison between the two boroughs by cusisine type. 
+```{r}
+Performance2 <- spread(Performance,"BROOKLYN/BRONX","Average");Performance2
+```
+
