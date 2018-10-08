@@ -1,0 +1,77 @@
+---
+title: "Project 2 C"
+author: "Faizan Younus"
+date: "10/7/2018"
+output: html_document
+---
+IS 607 - Project 2 The goal of this assignment is to give you practice in preparing different datasets for downstream analysis work. Your task is to:
+
+Choose any three of the “wide” datasets identified in the Week 6 Discussion items. (You may use your own dataset; please don’t use my Sample Post dataset, since that was used in your Week 6 assignment!) For each of the three chosen datasets: ??? Create a .CSV file (or optionally, a MySQL database!) that includes all of the information included in the dataset. You’re encouraged to use a “wide” structure similar to how the information appears in the discussion item, so that you can practice tidying and transformations as described below. ??? Read the information from your .CSV file into R, and use tidyr and dplyr as needed to tidy and transform your data. [Most of your grade will be based on this step!] ??? Perform the analysis requested in the discussion item. ??? Your code should be in an R Markdown file, posted to rpubs.com, and should include narrative descriptions of your data cleanup work, analysis, and conclusions.
+Please include in your homework submission, for each of the three chosen datasets: ??? The URL to the .Rmd file in your GitHub repository, and ??? The URL for your rpubs.com web page.
+
+
+
+Data : https://en.wikipedia.org/wiki/Lionel_Messi
+
+Editing the data for Messi and analyzing goals by year.
+
+
+#Loading the packages
+
+```{r}
+library(tidyr)
+library(dplyr)
+library(stringr)
+```
+
+
+
+
+
+
+#Loading the data into R
+```{r}
+Rawwide_data <- read.csv(paste0("https://raw.githubusercontent.com/Fyoun123/Data607/master/Project%202/messi.csv"),stringsAsFactors = F)
+Rawwide_data
+```
+
+
+
+#Selecting portions I want
+
+
+```{r}
+DF2 <- Rawwide_data %>%
+    select(Season,League.Goals,Copa.del.Rey.Goals,Champions.League.Goals,Other.Goals);DF2
+```
+
+  
+#Using gather to make the data long.
+
+```{r}
+DF3<- DF2 %>% gather(Type,Number,League.Goals:Other.Goals)
+DF3
+```
+
+
+
+#Filtering out unecessary data.
+```{r}
+DF4 <- DF3 %>% filter(Number>=0) ; DF4
+```
+
+#Removing characters from Year
+```{r}
+SeasonY <- c(str_sub(DF4$Season, 1, 7))
+Test <- data.frame(SeasonY,DF4$Type,DF4$Number)
+Test
+```
+
+
+#Sum by year. 
+```{r}
+Performance <- Test %>% group_by(SeasonY) %>% summarise(Total = sum(DF4.Number));Performance
+```
+
+
+
