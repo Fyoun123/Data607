@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<data-set xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<record>
+		<Books>Steve Jobs</Books>
+		<Author>Walter Isaacson</Author>
+		<Genre>Biography</Genre>
+	</record>
+	<record>
+		<Books>Our Oreintal Heritage</Books>
+		<Author>Will Durant</Author>
+		<Genre>History</Genre>
+	</record>
+	<record>
+		<Books>The Grand Design</Books>
+		<Author>Stephen Hawking and Leonard Mlodinow</Author>
+		<Genre>Popular science</Genre>
+	</record>
+</data-set>
