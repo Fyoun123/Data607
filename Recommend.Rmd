@@ -1,0 +1,31 @@
+---
+title: "Recommender Systems"
+author: "Faizan Younus"
+date: "November 8, 2018"
+output: html_document
+---
+
+
+[Google near me](https://www.thinkwithgoogle.com/consumer-insights/near-me-searches/)
+
+
+1)Who are the target users?
+
+Any and all users sarching for a given locaiton, ranked by customer interraction and average review. A simple search of "grocery" will show you grocery stores near you. 
+
+2)What are their key goals?
+
+A)The keygoals of the users are to find more insight into their search
+B)They might also be interested in its location
+C)They might also be interested in what prupose it serves
+
+3)Goals Accomplishment-
+
+There is a large marketing gold mind in these "near me" searches. There has been exponential gorwth in the keywords over the past few years. Google creates a hierarchy of locationa and ranking, Ranking the highest rated experiences at the top.The more the business does to manage its google domain, the more likely they are to be more visble. 
+
+Improvements-
+
+I believe further integration on a local level will create a superiror user-experience. Perhaps an integration with Opentable or Reserve, allowing users to make orders in a sort of one shop stop.
+
+
+
