@@ -1,0 +1,182 @@
+[
+ {
+   "FIELD1": "City",
+   "FIELD2": "1993",
+   "FIELD3": "1995",
+   "FIELD4": "+ - %"
+ },
+ {
+   "FIELD1": "New York",
+   "FIELD2": "600,346",
+   "FIELD3": "444,758",
+   "FIELD4": "-25.9%"
+ },
+ {
+   "FIELD1": "Los Angeles",
+   "FIELD2": "312,790",
+   "FIELD3": "266,204",
+   "FIELD4": "-14.9%"
+ },
+ {
+   "FIELD1": "Chicago",
+   "FIELD2": "*",
+   "FIELD3": "*",
+   "FIELD4": "*"
+ },
+ {
+   "FIELD1": "Houston",
+   "FIELD2": "141,179",
+   "FIELD3": "131,602",
+   "FIELD4": "-6.8%"
+ },
+ {
+   "FIELD1": "Philadelphia",
+   "FIELD2": "97,659",
+   "FIELD3": "108,278",
+   "FIELD4": "+10.9%"
+ },
+ {
+   "FIELD1": "San Diego",
+   "FIELD2": "85,227",
+   "FIELD3": "64,235",
+   "FIELD4": "-24.6%"
+ },
+ {
+   "FIELD1": "Phoenix",
+   "FIELD2": "96,476",
+   "FIELD3": "118,126",
+   "FIELD4": "+22.4%"
+ },
+ {
+   "FIELD1": "Dallas",
+   "FIELD2": "110,803",
+   "FIELD3": "98,624",
+   "FIELD4": "-11.0%"
+ },
+ {
+   "FIELD1": "Detroit",
+   "FIELD2": "122,329",
+   "FIELD3": "119,065",
+   "FIELD4": "-2.7%"
+ },
+ {
+   "FIELD1": "San Antonio",
+   "FIELD2": "97,671",
+   "FIELD3": "79,931",
+   "FIELD4": "-18.2%"
+ },
+ {
+   "FIELD1": "San Jose",
+   "FIELD2": "36,743",
+   "FIELD3": "36,096",
+   "FIELD4": "-1.8%"
+ },
+ {
+   "FIELD1": "Indianapolis",
+   "FIELD2": "33,530",
+   "FIELD3": "30,775",
+   "FIELD4": "-8.2%"
+ },
+ {
+   "FIELD1": "Las Vegas",
+   "FIELD2": "48,367",
+   "FIELD3": "60,178",
+   "FIELD4": "+24.4%"
+ },
+ {
+   "FIELD1": "San Francisco",
+   "FIELD2": "67,345",
+   "FIELD3": "60,474",
+   "FIELD4": "-10.2%"
+ },
+ {
+   "FIELD1": "Baltimore",
+   "FIELD2": "91,920",
+   "FIELD3": "94,855",
+   "FIELD4": "+3.2%"
+ },
+ {
+   "FIELD1": "Jacksonville",
+   "FIELD2": "67,494",
+   "FIELD3": "61,129",
+   "FIELD4": "-9.4%"
+ },
+ {
+   "FIELD1": "Columbus",
+   "FIELD2": "58,604",
+   "FIELD3": "58,715",
+   "FIELD4": "+1.9%"
+ },
+ {
+   "FIELD1": "Milwaukee",
+   "FIELD2": "50,435",
+   "FIELD3": "52,679",
+   "FIELD4": "+4.4%"
+ },
+ {
+   "FIELD1": "Memphis",
+   "FIELD2": "62,150",
+   "FIELD3": "65,597",
+   "FIELD4": "+5.5%"
+ },
+ {
+   "FIELD1": "Washington, D.C.",
+   "FIELD2": "66,758",
+   "FIELD3": "67,402",
+   "FIELD4": "+1.0%"
+ },
+ {
+   "FIELD1": "El Paso",
+   "FIELD2": "46,738",
+   "FIELD3": "41,692",
+   "FIELD4": "-10.8%"
+ },
+ {
+   "FIELD1": "Boston",
+   "FIELD2": "55,555",
+   "FIELD3": "52,278",
+   "FIELD4": "-6.0%"
+ },
+ {
+   "FIELD1": "Seattle",
+   "FIELD2": "62,679",
+   "FIELD3": "55,507",
+   "FIELD4": "-11.4%"
+ },
+ {
+   "FIELD1": "Nashville",
+   "FIELD2": "55,500",
+   "FIELD3": "56,090",
+   "FIELD4": "+1.0%"
+ },
+ {
+   "FIELD1": "Austin",
+   "FIELD2": "51,468",
+   "FIELD3": "42,586",
+   "FIELD4": "-17.6%"
+ },
+ {
+   "FIELD1": "Denver",
+   "FIELD2": "39,796",
+   "FIELD3": "34,769",
+   "FIELD4": "-12.6%"
+ },
+ {
+   "FIELD1": "Cleveland",
+   "FIELD2": "40,006",
+   "FIELD3": "38,665",
+   "FIELD4": "-3.4%"
+ },
+ {
+   "FIELD1": "New Orleans",
+   "FIELD2": "52,773",
+   "FIELD3": "53,399",
+   "FIELD4": "+1.2%"
+ },
+ {
+   "FIELD1": "Fort Worth",
+   "FIELD2": "49,801",
+   "FIELD3": "39,667",
+   "FIELD4": "-20.3%"
+ }
+]
