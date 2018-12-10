@@ -1,0 +1,259 @@
+---
+title: "William Bratton and Crime"
+author: "Faizan Younus"
+date: "12/9/2018"
+output: html_document
+---
+
+#Intro
+Commissioner William Bratton and his executive staff could take satisfaction in the progress made by the New York Police Department (NYPD) toward goals they had set at the outset of 1994 to reduce major crimes in the City. Their efforts had produced better results than even some of them had expected, better even than portrayed in the popular television drama carrying the Department’s name. William Bratton revolutionized the way policing was handleded in America, the introduction of the Compstat system utilized data like never before and would allow the NYPD to fight crime like never before. A change was implimented in the policing, away from following a rective protocol the department shifted focus on prevention. The purpose of this analysis is to compare the decrease in crime during Brattons first term with crime statistics of his second term. 
+
+#Data
+The data utilized is found on Kaggle and observes 2014-2015 Crimes reported in all 5 boroughs of New York City. It can be found [here.](https://www.kaggle.com/adamschroeder/crimes-new-york-city) As data from his first term is not widely available - I converted a PDF file showing the overall crime numbers in the years of question; with this in mind the anlysis will focus primarily on 2014 and 2015 as data is available for these periods. 
+
+#Package Load
+```{r}
+library(tidyr)      
+library(dplyr)
+library(lubridate)
+library(knitr)   
+library(leaflet)    
+library(ggplot2)    
+library(gridExtra)
+library(jsonlite)
+```
+
+##Historic Analysis
+#Data load - Historic
+```{r}
+JSON_URL <- "https://raw.githubusercontent.com/Fyoun123/Data607/master/Final%20Project/RAW/NYPD.json" #File was converted from PDF. 
+json_df <- as.data.frame(fromJSON(JSON_URL))
+colnames(json_df) = json_df[1, ] # The first row will be the header
+json_df = json_df[-1, ]          # Removing the first row.
+json_df                          # Test
+```
+#Data Clean - Historic
+```{r}
+NY_Crime <- filter(json_df,json_df$City=='New York')
+U_P <- gather(NY_Crime, year, value, `1993`:`1995`)
+U_P$`+ - %`<- NULL
+U_P$City <- NULL
+U_P$value <- as.numeric(gsub(",","",U_P$value))
+U_P
+```
+
+
+#Visual representation of Crime decrease
+```{r}
+# Basic barplot
+ggplot(data=U_P, aes(x=year, y=value)) +
+geom_bar(stat="identity") + scale_y_continuous(name="Crime", labels = scales::comma)
+```
+
+According to the sources utilized crime decreased by 25.9% during William Brattons first term as commisioners - This would be highly controversial later on as people began to argue that numbers were inflated to better represent the impact Bratton had. 
+
+
+#Column Decription
+```{r}
+(read.csv("Crime_Column_Description.csv"))
+```
+
+
+
+#Data load - 2014 & 2015
+Import CSV and rename columns so they are more readily understandable.
+```{r}
+NYPD <- read.csv("NYPD_Complaint_Data_Historic.csv")
+colnames(NYPD) <- c("crime_id","occurance_date","occurance_time","ending_date","ending_time","reported_date","offense_classification_code","offense_classification_description","internal_classification_code","internal_classification_description","crime_status","level_of_offense","type_of_jurisdiction","borough","precienct","specific_location","type_of_location","park_name","housing_name","x_coordinate","y_coordinate","latitude","longitude","location")
+NYPD <- NYPD[,-c(1,7,9,19,18,20,21,24)] #Removal of columns
+```
+```{r}
+head(NYPD)
+```
+
+#Data cleaning 
+We take Occurance_date and subset into more time relate columns, month, day, weekday, etc. Filter data to appropriate year to rid of lagging rows. 
+```{r}
+NYPD <- NYPD %>%
+  mutate(occurance_year = year(mdy(occurance_date)),
+         occurance_month = month(mdy(occurance_date)),
+         occurance_day = day(mdy(occurance_date)),
+         occurance_weekdays = weekdays(mdy(occurance_date)),
+         diff_reported.occurance = difftime(mdy(reported_date),mdy(occurance_date),units = "day"),
+         occurance_date_time = as.POSIXct(paste(occurance_date,occurance_time),format = "%m/%d/%Y %H:%M:%S"),
+         ending_date_time = as.POSIXct(paste(ending_date,ending_time),format = "%m/%d/%Y %H:%M:%S"),
+         diff_ending.occurance = round(difftime(ending_date_time,occurance_date_time,units = "hours"),digits = 2),
+         weekends = ifelse(occurance_weekdays %in% c("Sunday","Saturday"),"Yes","No")
+         ) %>% 
+  filter(occurance_year == "2014" | occurance_year == "2015")
+```
+
+#Total Crime numbers for 2015 and 2015
+```{r}
+NYPD1 <- NYPD %>% 
+     group_by(occurance_year) %>% 
+     summarise(total_crime = length(occurance_date))
+NYPD1$total_crime <- as.numeric(NYPD1$total_crime)
+NYPD1$occurance_year <- as.character(NYPD1$occurance_year)
+ggplot(data=NYPD1, aes(x=occurance_year, y=total_crime)) +
+geom_bar(stat="identity") + scale_y_continuous(name="Crime", labels = scales::comma)
+
+```
+
+
+```{r}
+H1 <- ggplot(data=NYPD1, aes(x=occurance_year, y=total_crime)) +
+      geom_bar(stat="identity") + scale_y_continuous(name="Crime", labels = scales::comma)
+H2 <- ggplot(data=U_P, aes(x=year, y=value)) +
+      geom_bar(stat="identity") + scale_y_continuous(name="Crime", labels = scales::comma)
+grid.arrange(H1, H2, ncol = 2)
+```
+
+```{r}
+NYPD1
+```
+As per observation we notice that crime has declined as a whole in NYC in the past 2 decades, not by an entirely staggering amount. Total crime was reported at 490,363 in 2014 and has come down to 468,576 in 2015. This is a decrease of about 4.4%. However the 2015 crime numbers represent a 5.3% increase from the reported 1995 crime numbers. This might be due to the decrease in "Creative" reporting of the compstat data in the past decade.
+
+##Current Crime analysis
+```{r}
+NYPD2014 <- filter(NYPD,occurance_year == "2014")
+NYPD2015 <- filter(NYPD,occurance_year == "2015")
+```
+
+```{r}
+T20141 <- NYPD2014 %>% 
+     ggplot(aes(as.factor(x = occurance_month))) + 
+     geom_bar() +
+     ggtitle("Monthly New York Crime - 2014") + xlab("Month") + ylab("number of crime")
+T20151 <- NYPD2015 %>% 
+     ggplot(aes(as.factor(x = occurance_month))) + 
+     geom_bar() +
+     ggtitle("Monthly New York Crime - 2015") + xlab("Month") + ylab("number of crime")
+grid.arrange(T20141, T20151, ncol = 2)
+```
+```{r}
+(NYPD %>% 
+     ggplot(aes(as.factor(x = occurance_month),fill = as.factor(occurance_year))) +
+     geom_bar(position = "fill") +
+     xlab("Month") + ylab("proportion") +
+     scale_fill_discrete(guide = guide_legend(title = "year")))
+```
+
+Here we see a strong correlation between crime spiking as the weather becomes warmer and slowing down in the winter tempeartures. Theres a strong decline in crime in january, likely due to ramped up efforts around the New year.
+
+#Comparison of different boroughs
+```{r}
+NYPD20142 <- NYPD2014 %>%
+  ggplot(aes(x = borough, fill = level_of_offense)) +
+  geom_bar(position = "dodge") +  ggtitle("Borough - 2014") 
+
+NYPD20152 <- NYPD2015 %>%
+  ggplot(aes(x = borough, fill = level_of_offense)) +
+  geom_bar(position = "dodge") + ggtitle("Borough - 2015") 
+
+grid.arrange(NYPD20142, NYPD20152, ncol = 1)
+```
+
+
+#Decrease in crime in boroughs
+```{r}
+(NYPDB1 <- NYPD2014 %>% 
+     group_by(borough) %>% 
+     summarise(total_crime = length(occurance_date)))
+(NYPDB2 <- NYPD2015 %>% 
+     group_by(borough) %>% 
+     summarise(total_crime = length(occurance_date)))
+```
+
+
+
+```{r}
+borough.crime <- NYPD %>% 
+  group_by(borough) %>% 
+  summarise(n_borough = n())
+borough.crime2014 <- NYPD2014 %>% 
+  group_by(borough) %>% 
+  summarise(n_borough = n())
+borough.crime2015 <- NYPD2015 %>% 
+  group_by(borough) %>% 
+  summarise(n_borough = n())
+borough.crime2014 %>% 
+  ggplot(aes(x = borough, y = n_borough)) +
+  geom_bar(stat = "identity") +
+  ggtitle("Number of crime in different borough - 2014") + 
+  xlab("Borough") + ylab("number of crime") +
+  geom_text(aes(label = ..y..), vjust = -.5)
+borough.crime2015 %>% 
+  ggplot(aes(x = borough, y = n_borough)) +
+  geom_bar(stat = "identity") +
+  ggtitle("Number of crime in different borough - 2015") + 
+  xlab("Borough") + ylab("number of crime") +
+  geom_text(aes(label = ..y..), vjust = -.5)
+```
+
+
+
+
+#Types of crime
+```{r}
+T1A<-  NYPD2014 %>% 
+  group_by(offense_classification_description) %>% 
+  summarise(n_class = n()) %>% 
+  arrange(desc(n_class)) %>% 
+  head(n = 5) %>% 
+  ggplot(aes(x = reorder(offense_classification_description, -n_class), y = n_class)) +
+  geom_bar(stat = "identity") +
+  ggtitle("Top 5 crime type in New York - 2014") + 
+  xlab("offense classification") + ylab("number of crime") +
+  geom_text(aes(label = ..y..), vjust = 0.5) +
+  coord_flip()
+T1B<- NYPD2015 %>% 
+  group_by(offense_classification_description) %>% 
+  summarise(n_class = n()) %>% 
+  arrange(desc(n_class)) %>% 
+  head(n = 5) %>% 
+  ggplot(aes(x = reorder(offense_classification_description, -n_class), y = n_class)) +
+  geom_bar(stat = "identity") +
+  ggtitle("Top 5 crime type in New York - 2015") + 
+  xlab("offense classification") + ylab("number of crime") +
+  geom_text(aes(label = ..y..), vjust = 0.5) +
+  coord_flip()
+grid.arrange(T1A, T1B, ncol = 1)
+```
+
+
+
+
+##War against drugs
+```{r}
+NYPD2014DRUGS <- filter(NYPD2014,offense_classification_description == "DANGEROUS DRUGS")
+DRUG.distribution2014 <- sample_n(NYPD2014DRUGS, 10e3) 
+
+leaflet(data = DRUG.distribution2014) %>% 
+  addProviderTiles("Stamen.TonerLite",
+                     group = "Toner", 
+                     options = providerTileOptions(minZoom = 1, maxZoom = 100)) %>%
+  addCircleMarkers(~ longitude, ~latitude, radius = 0.0001, color = "orange", fillOpacity = .00001) 
+```
+
+```{r}
+NYPD2015DRUGS <- filter(NYPD2015,offense_classification_description == "DANGEROUS DRUGS")
+DRUG.distribution2015 <- sample_n(NYPD2015DRUGS, 10e3) 
+
+leaflet(data = DRUG.distribution2015) %>% 
+  addProviderTiles("Stamen.TonerLite",
+                     group = "Toner", 
+                     options = providerTileOptions(minZoom = 1, maxZoom = 100)) %>%
+  addCircleMarkers(~ longitude, ~latitude, radius = 0.0001, color = "red", fillOpacity = .00001) 
+```
+
+
+```{r}
+include_graphics(rep("S1.png", 1))
+```
+
+The shaded portion on the image represents the war against drugs as per 1993, in comparison with 2014 and 2015 those areas are still showing residual impacts of the past. Being that they are still drug hotspots. 
+
+
+##Conclusion
+William Bratton has had a major impact on the way crime is fought in todays time, he led a data revolution that gave insgihts into fighting crime that was not possible in the past. Although there may have been creativity as play in the generally large impact he had in his first tenure as NYC commisoner, his second term was still impactful with crime decreasing across the boroughs. 
